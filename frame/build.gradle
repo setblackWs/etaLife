@@ -1,0 +1,20 @@
+plugins {
+    id 'java'
+}
+
+version 'unspecified'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile rootProject
+}
+
+apply plugin:'application'
+mainClassName = "pl.setblack.etalife.LifeWindow"
+
+applicationDefaultJvmArgs = ["-Xss1g"]

@@ -1,0 +1,15 @@
+plugins {
+    id 'com.typelead.eta' version '0.7.9'
+    id 'application'
+    id 'java'
+}
+
+eta {
+    version = '0.8.6b2'
+    etlasVersion = '1.5.0.0'
+}
+
+dependencies {
+  compile eta('base:4.11.1.0')
+  compile eta('array:0.5.2.0')
+}
