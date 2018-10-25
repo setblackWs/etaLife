@@ -78,17 +78,4 @@ showCell::Cell -> Char
 showCell Dead = '.'
 showCell Alive = 'O'
 
-showVRow::Plane->Int->String
-showVRow plane y =  rowString ++ "\n"
-   where
-         row = plane ! y
-         myBounds =  bounds row
-         xs  = [(fst myBounds).. (snd myBounds)]
-         aRow = (\x -> show (countNeighbours plane x y) ) <$> xs
-         rowString = foldl (++) "" aRow
 
-showVPlane::Plane->String
-showVPlane plane = foldl (++)  "" (showVRow plane <$> rows)
-   where
-      myBounds =  bounds plane
-      rows  = [(fst myBounds).. (snd myBounds)]
