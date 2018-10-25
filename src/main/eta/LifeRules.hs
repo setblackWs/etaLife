@@ -12,32 +12,13 @@ type Plane = Array Int Row
 
 ---  improve this solution according to Conway's Game of Life rules
 nextGeneration::Plane->Plane
-nextGeneration plane =   array (bounds plane) newRows
-      where
-            rows = assocs plane
-            newRows = (\(y,row) -> (y, processRow plane row y)   ) <$> rows
+nextGeneration plane = plane
+
+{-
 
 
-countNeighbours::Plane->Int->Int->Int
-countNeighbours plane x y = foldl (+) 0 allValues
-      where
-         rows = [y-1, y, y+1]
-         cells = [x-1, x, x+1]
-         valuesForY y1 =  (\x -> getCellValue plane x y1 ) <$> cells
-         allValues =  rows >>= valuesForY
 
-processRow::Plane->Row->Int->Row
-processRow plane row y = array (bounds row) neighbours
-      where
-            cells = assocs row
-            neighbours = ( \(x, cell) -> (x, decide cell (countNeighbours plane x y)) ) <$> cells
-
-
-decide::Cell->Int->Cell
-decide Dead 3 = Alive
-decide Alive 3 = Alive
-decide Alive 4 = Alive
-decide _ _ = Dead
+-}
 
 -- some utility function You can use (you do not have to)
 getCellValue::Plane->Int->Int->Int
