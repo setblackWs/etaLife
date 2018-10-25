@@ -1,4 +1,7 @@
-module LifeB where
+module LifeRules where
+
+-- basic definitions
+-- keep them
 
 import Data.Array
 import Data.Maybe
@@ -7,6 +10,36 @@ data Cell = Dead | Alive
 type Row = Array Int Cell
 type Plane = Array Int Row
 
+---  improve this solution according to Conway's Game of Life rules
+nextGeneration::Plane->Plane
+nextGeneration plane =   array (bounds plane) newRows
+      where
+            rows = assocs plane
+            newRows = (\(y,row) -> (y, processRow plane row y)   ) <$> rows
+
+
+countNeighbours::Plane->Int->Int->Int
+countNeighbours plane x y = foldl (+) 0 allValues
+      where
+         rows = [y-1, y, y+1]
+         cells = [x-1, x, x+1]
+         valuesForY y1 =  (\x -> getCellValue plane x y1 ) <$> cells
+         allValues =  rows >>= valuesForY
+
+processRow::Plane->Row->Int->Row
+processRow plane row y = array (bounds row) neighbours
+      where
+            cells = assocs row
+            neighbours = ( \(x, cell) -> (x, decide cell (countNeighbours plane x y)) ) <$> cells
+
+
+decide::Cell->Int->Cell
+decide Dead 3 = Alive
+decide Alive 3 = Alive
+decide Alive 4 = Alive
+decide _ _ = Dead
+
+-- some utility function You can use (you do not have to)
 getCellValue::Plane->Int->Int->Int
 getCellValue plane x y
    | (y >= minBound && y <=maxBound ) = getCellInRow ( plane ! y ) x
@@ -26,39 +59,12 @@ getCellInRow row x
          myBounds = bounds row
 
 cellValue Dead = 0
-cellValue Alive  = 1
-
-countNeighbours::Plane->Int->Int->Int
-countNeighbours plane x y = foldl (+) 0 allValues
-      where
-         rows = [y-1, y, y+1]
-         cells = [x-1, x, x+1]
-         valuesForY y1 =  (\x -> getCellValue plane x y1 ) <$> cells
-         allValues =  rows >>= valuesForY
-
-processPlane::Plane->Plane
-processPlane plane =   array (bounds plane) newRows
-      where
-            rows = assocs plane
-            newRows = (\(y,row) -> (y, processRow plane row y)   ) <$> rows
+cellValue Alive = 1
 
 
-
-processRow::Plane->Row->Int->Row
-processRow plane row y = array (bounds row) neighbours
-      where
-            cells = assocs row
-            neighbours = ( \(x, cell) -> (x, decide cell (countNeighbours plane x y)) ) <$> cells
-
-
-decide::Cell->Int->Cell
-decide Dead 3 = Alive
-decide Alive 3 = Alive
-decide Alive 4 = Alive
-decide _ _ = Dead
-
-
--- create
+-- this is construction part - java uses those functions
+-- to create initial state of game
+-- bindings to java are defined in LifeJ
 
 createRow::Int->Row
 createRow size = array (0, size) [ (i, Dead) | i <- [0..size]]
@@ -74,7 +80,7 @@ setCell plane x y cell= plane  // [(y, newRow)]
 
 
 
--- show / debug
+-- show / debug functions
 
 showRow::Row->String
 showRow row =  fmap showCell elemsList
